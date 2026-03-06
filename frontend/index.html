@@ -28,22 +28,16 @@
                 <h2 class="text-2xl font-bold text-gray-800">Bem-vindo ao PTT English!</h2>
                 <p class="text-gray-500 mt-2">Faça login ou crie sua conta</p>
             </div>
-            
             <div class="space-y-4">
                 <input type="email" id="auth-email" placeholder="Email" class="custom-input w-full rounded-xl p-4" />
                 <input type="password" id="auth-password" placeholder="Senha" class="custom-input w-full rounded-xl p-4" />
                 <input type="text" id="auth-name" placeholder="Nome" class="custom-input w-full rounded-xl p-4 hidden" />
-                
-                <button onclick="handleAuth()" id="auth-btn" class="auth-btn w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold py-4 rounded-xl hover:shadow-lg transition-all">
-                    ENTRAR
-                </button>
-                
+                <button onclick="handleAuth()" id="auth-btn" class="auth-btn w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold py-4 rounded-xl hover:shadow-lg transition-all">ENTRAR</button>
                 <p class="text-center text-sm text-gray-500">
                     <span id="auth-toggle-text">Não tem conta?</span>
                     <button onclick="toggleAuthMode()" class="text-indigo-600 font-bold hover:underline">Clique aqui</button>
                 </p>
             </div>
-            
             <p id="auth-error" class="text-red-500 text-sm text-center mt-4 hidden"></p>
         </div>
     </div>
@@ -60,12 +54,10 @@
 
     <!-- App Container -->
     <div class="app-container w-full max-w-md overflow-hidden">
-        
         <!-- Header -->
         <div class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 p-6 text-white relative overflow-hidden">
             <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
             <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2"></div>
-            
             <div class="relative z-10">
                 <div class="flex items-center justify-between mb-4">
                     <div>
@@ -84,7 +76,6 @@
                         </button>
                     </div>
                 </div>
-                
                 <div class="mt-5">
                     <div class="flex justify-between text-xs mb-2">
                         <span class="font-semibold">Progresso de Hoje</span>
@@ -103,14 +94,12 @@
 
         <!-- Main Content -->
         <div class="p-5 space-y-6 max-h-[70vh] overflow-y-auto">
-            
             <!-- Section 1: PTT Methodology -->
             <div>
                 <div class="flex items-center justify-between mb-3">
                     <h2 class="text-gray-700 font-bold text-lg">📚 Método PTT CURSOS</h2>
                     <span class="badge bg-purple-100 text-purple-700">3 Pilares</span>
                 </div>
-                
                 <div class="grid grid-cols-3 gap-3">
                     <button class="app-button btn-logica border-2 border-logica-100 bg-gradient-to-br from-logica-50 to-white rounded-2xl p-4 flex flex-col items-center gap-2" onclick="openContent('logica')">
                         <div class="w-14 h-14 bg-gradient-to-br from-logica-500 to-logica-700 rounded-2xl flex items-center justify-center shadow-lg">
@@ -119,7 +108,6 @@
                         <span class="text-sm font-bold text-gray-700">Lógica</span>
                         <span class="text-[10px] text-gray-500 text-center">Sintaxe</span>
                     </button>
-                    
                     <button class="app-button btn-contexto border-2 border-contexto-100 bg-gradient-to-br from-contexto-50 to-white rounded-2xl p-4 flex flex-col items-center gap-2" onclick="openContent('contexto')">
                         <div class="w-14 h-14 bg-gradient-to-br from-contexto-500 to-contexto-700 rounded-2xl flex items-center justify-center shadow-lg">
                             <i class="ph-fill ph-chat-circle-text text-white text-2xl"></i>
@@ -127,7 +115,6 @@
                         <span class="text-sm font-bold text-gray-700">Contexto</span>
                         <span class="text-[10px] text-gray-500 text-center">Semântica</span>
                     </button>
-                    
                     <button class="app-button btn-som border-2 border-som-100 bg-gradient-to-br from-som-50 to-white rounded-2xl p-4 flex flex-col items-center gap-2" onclick="openContent('som')">
                         <div class="w-14 h-14 bg-gradient-to-br from-som-500 to-som-700 rounded-2xl flex items-center justify-center shadow-lg">
                             <i class="ph-fill ph-speaker-high text-white text-2xl"></i>
@@ -137,14 +124,12 @@
                     </button>
                 </div>
             </div>
-
             <!-- Section 2: Skills -->
             <div>
                 <div class="flex items-center justify-between mb-3">
                     <h2 class="text-gray-700 font-bold text-lg">🎯 Habilidades</h2>
                     <span class="badge bg-blue-100 text-blue-700">4 Skills</span>
                 </div>
-                
                 <div class="grid grid-cols-2 gap-3">
                     <button class="app-button btn-listening border-2 border-listening-100 bg-gradient-to-br from-listening-50 to-white rounded-2xl p-4 flex flex-col items-center gap-2" onclick="openContent('listening')">
                         <div class="w-16 h-16 bg-gradient-to-br from-listening-500 to-listening-700 rounded-2xl flex items-center justify-center shadow-lg">
@@ -153,7 +138,6 @@
                         <span class="font-bold text-gray-700">Listening</span>
                         <span class="text-[10px] text-gray-500">Escuta</span>
                     </button>
-                    
                     <button class="app-button btn-speaking border-2 border-speaking-100 bg-gradient-to-br from-speaking-50 to-white rounded-2xl p-4 flex flex-col items-center gap-2" onclick="openContent('speaking')">
                         <div class="w-16 h-16 bg-gradient-to-br from-speaking-500 to-speaking-700 rounded-2xl flex items-center justify-center shadow-lg">
                             <i class="ph-fill ph-microphone text-white text-3xl"></i>
@@ -161,7 +145,6 @@
                         <span class="font-bold text-gray-700">Speaking</span>
                         <span class="text-[10px] text-gray-500">Fala</span>
                     </button>
-                    
                     <button class="app-button btn-reading border-2 border-reading-100 bg-gradient-to-br from-reading-50 to-white rounded-2xl p-4 flex flex-col items-center gap-2" onclick="openContent('reading')">
                         <div class="w-16 h-16 bg-gradient-to-br from-reading-500 to-reading-700 rounded-2xl flex items-center justify-center shadow-lg">
                             <i class="ph-fill ph-book-open text-white text-3xl"></i>
@@ -169,7 +152,6 @@
                         <span class="font-bold text-gray-700">Reading</span>
                         <span class="text-[10px] text-gray-500">Leitura</span>
                     </button>
-                    
                     <button class="app-button btn-writing border-2 border-writing-100 bg-gradient-to-br from-writing-50 to-white rounded-2xl p-4 flex flex-col items-center gap-2" onclick="openContent('writing')">
                         <div class="w-16 h-16 bg-gradient-to-br from-writing-500 to-writing-700 rounded-2xl flex items-center justify-center shadow-lg">
                             <i class="ph-fill ph-pencil-simple text-white text-3xl"></i>
@@ -179,14 +161,12 @@
                     </button>
                 </div>
             </div>
-
             <!-- Section 3: Training -->
             <div>
                 <div class="flex items-center justify-between mb-3">
                     <h2 class="text-gray-700 font-bold text-lg">🚀 Training</h2>
                     <span class="badge bg-cyan-100 text-cyan-700">Completo</span>
                 </div>
-                
                 <button class="app-button btn-training w-full border-2 border-training-100 bg-gradient-to-br from-training-50 to-white rounded-2xl p-5 flex items-center gap-4" onclick="openContent('training')">
                     <div class="w-16 h-16 bg-gradient-to-br from-training-500 to-training-700 rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
                         <i class="ph-fill ph-aperture text-white text-3xl"></i>
@@ -199,12 +179,9 @@
                 </button>
             </div>
         </div>
-
         <!-- Footer -->
         <div class="p-4 bg-gray-50 border-t border-gray-100">
-            <p class="text-center text-xs text-gray-400">
-                <i class="ph ph-info"></i> PTT CURSOS © 2024
-            </p>
+            <p class="text-center text-xs text-gray-400"><i class="ph ph-info"></i> PTT CURSOS © 2024</p>
         </div>
     </div>
 
