@@ -1,0 +1,13 @@
+{
+  "name": "ptt-english-root",
+  "version": "1.0.0",
+  "description": "PTT English App - Root",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "cd backend && node server.js",
+    "postinstall": "cd backend && npm install"
+  },
+  "engines": {
+    "node": "18.x"
+  }
+}
