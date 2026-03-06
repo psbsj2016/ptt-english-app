@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="PTT English">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <title>PTT English App | PTT CURSOS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Nunito', 'sans-serif'] },
+                    colors: {
+                        logica: { 100: '#ede9fe', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9' },
+                        contexto: { 100: '#fef3c7', 500: '#f59e0b', 600: '#d97706', 700: '#b45309' },
+                        som: { 100: '#d1fae5', 500: '#10b981', 600: '#059669', 700: '#047857' },
+                        listening: { 100: '#fee2e2', 500: '#ef4444', 600: '#dc2626', 700: '#b91c1c' },
+                        speaking: { 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' },
+                        reading: { 100: '#e0e7ff', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' },
+                        writing: { 100: '#fce7f3', 500: '#ec4899', 600: '#db2777', 700: '#be185d' },
+                        training: { 100: '#cffafe', 500: '#06b6d4', 600: '#0891b2', 700: '#0e7490' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); min-height: 100vh; }
+        .app-container { background: white; border-radius: 32px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
+        .app-button { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; position: relative; overflow: hidden; }
+        .app-button:hover { transform: translateY(-6px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15); }
+        .app-button:active { transform: translateY(-2px); }
+        .btn-logica:hover { box-shadow: 0 20px 25px -5px rgba(139, 92, 246, 0.4); }
+        .btn-contexto:hover { box-shadow: 0 20px 25px -5px rgba(245, 158, 11, 0.4); }
+        .btn-som:hover { box-shadow: 0 20px 25px -5px rgba(16, 185, 129, 0.4); }
+        .btn-listening:hover { box-shadow: 0 20px 25px -5px rgba(239, 68, 68, 0.4); }
+        .btn-speaking:hover { box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.4); }
+        .btn-reading:hover { box-shadow: 0 20px 25px -5px rgba(99, 102, 241, 0.4); }
+        .btn-writing:hover { box-shadow: 0 20px 25px -5px rgba(236, 72, 153, 0.4); }
+        .btn-training:hover { box-shadow: 0 20px 25px -5px rgba(6, 182, 212, 0.4); }
+        .modal-overlay { background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); animation: fadeIn 0.3s ease; }
+        .modal-content { animation: modalSlide 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes modalSlide { from { opacity: 0; transform: translateY(30px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        .progress-bar { transition: width 0.5s ease; }
+        .audio-wave { display: flex; align-items: center; justify-content: center; gap: 3px; height: 40px; }
+        .audio-wave span { width: 4px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 2px; animation: wave 1s ease-in-out infinite; }
+        @keyframes wave { 0%, 100% { height: 10px; } 50% { height: 30px; } }
+        .audio-wave span:nth-child(2) { animation-delay: 0.1s; }
+        .audio-wave span:nth-child(3) { animation-delay: 0.2s; }
+        .audio-wave span:nth-child(4) { animation-delay: 0.3s; }
+        .audio-wave span:nth-child(5) { animation-delay: 0.4s; }
+        .custom-input { transition: all 0.2s; border: 2px solid #e2e8f0; }
+        .custom-input:focus { outline: none; border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        .badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        .shake { animation: shake 0.3s ease; }
+        @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        .pop { animation: pop 0.3s ease; }
+        #install-banner { display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: white; padding: 16px 24px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); z-index: 1000; width: 90%; max-width: 400px; }
+        #install-banner.show { display: flex; align-items: center; gap: 12px; animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+        .loading { opacity: 0.5; pointer-events: none; }
+    </style>
+</head>
+<body class="flex items-center justify-center p-4">
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="modal-content bg-white rounded-3xl w-full max-w-md p-8 shadow-2xl">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="ph-fill ph-graduation-cap text-white text-3xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800">Bem-vindo ao PTT English!</h2>
+                <p class="text-gray-500 mt-2">Faça login ou crie sua conta</p>
+            </div>
+            
+            <div class="space-y-4">
+                <input type="email" id="auth-email" placeholder="Email" class="custom-input w-full rounded-xl p-4" />
+                <input type="password" id="auth-password" placeholder="Senha" class="custom-input w-full rounded-xl p-4" />
+                <input type="text" id="auth-name" placeholder="Nome" class="custom-input w-full rounded-xl p-4 hidden" />
+                
+                <button onclick="handleAuth()" id="auth-btn" class="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold py-4 rounded-xl hover:shadow-lg transition-all">
+                    ENTRAR
+                </button>
+                
+                <p class="text-center text-sm text-gray-500">
+                    <span id="auth-toggle-text">Não tem conta?</span>
+                    <button onclick="toggleAuthMode()" class="text-indigo-600 font-bold hover:underline">Clique aqui</button>
+                </p>
+            </div>
+            
+            <p id="auth-error" class="text-red-500 text-sm text-center mt-4 hidden"></p>
+        </div>
+    </div>
+
+    <!-- PWA Install Banner -->
+    <div id="install-banner">
+        <div class="flex-1">
+            <p class="font-bold text-gray-800 text-sm">📱 Instalar PTT English App</p>
+            <p class="text-xs text-gray-500">Acesse offline e tenha ícone na tela inicial</p>
+        </div>
+        <button id="install-btn" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-xl text-sm transition">Instalar</button>
+        <button id="dismiss-install" class="text-gray-400 hover:text-gray-600 p-2"><i class="ph ph-x"></i></button>
+    </div>
+
+    <!-- App Container -->
+    <div class="app-container w-full max-w-md overflow-hidden">
+        
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 p-6 text-white relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+            <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2"></div>
+            
+            <div class="relative z-10">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <div class="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center">
+                                <i class="ph-fill ph-graduation-cap text-white"></i>
+                            </div>
+                            <span class="text-xs font-bold bg-white/20 px-2 py-1 rounded-full">PTT CURSOS</span>
+                        </div>
+                        <h1 class="text-2xl font-extrabold">🎯 PTT English</h1>
+                        <p class="text-white/80 text-sm" id="user-name-display">Seu caminho para a fluência</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="logout()" class="bg-white/20 hover:bg-white/30 rounded-full p-2 transition">
+                            <i class="ph ph-sign-out text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="mt-5">
+                    <div class="flex justify-between text-xs mb-2">
+                        <span class="font-semibold">Progresso de Hoje</span>
+                        <span class="font-bold" id="daily-progress">0/8 atividades</span>
+                    </div>
+                    <div class="w-full bg-white/20 rounded-full h-2">
+                        <div id="progress-fill" class="bg-white h-2 rounded-full progress-bar" style="width: 0%"></div>
+                    </div>
+                    <div class="flex justify-between text-xs mt-2">
+                        <span class="text-white/80">XP Total: <strong id="user-xp">0</strong></span>
+                        <span class="text-white/80">Nível: <strong id="user-level">Iniciante</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="p-5 space-y-6 max-h-[70vh] overflow-y-auto">
+            
+            <!-- Section 1: PTT Methodology -->
+            <div>
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-gray-700 font-bold text-lg">📚 Método PTT CURSOS</h2>
+                    <span class="badge bg-purple-100 text-purple-700">3 Pilares</span>
+                </div>
+                
+                <div class="grid grid-cols-3 gap-3">
+                    <button class="app-button btn-logica border-2 border-logica-100 bg-gradient-to-br from-logica-50 to-white rounded-2xl p-4 flex flex-col items-center gap-2" onclick="openContent('logica')">
+                        <div class="w-14 h-14 bg-gradient-to-br from-logica-500 to-logica-700 rounded-2xl flex items-center justify-center shadow-lg">
+                            <i class="ph-fill ph-puzzle-piece text-white text-2xl"></i>
+                        </div>
+                        <span class="text-sm font-bold text-gray-700">Lógica</span>
+                        <span class="text-[10px] text-gray-500 text-center">Sintaxe</span>
+                    </button>
+                    
+                    <button class="app-button btn-contexto border-2 border-contexto-100 bg-gradient-to-br from-contexto-50 to-white rounded-2xl p-4 flex flex-col items-center gap-2" onclick="openContent('contexto')">
+                        <div class="w-14 h-14 bg-gradient-to-br from-contexto-500 to-contexto-700 rounded-2xl flex items-center justify-center shadow-lg">
+                            <i class="ph-fill ph-chat-circle-text text-white text-2xl"></i>
+                        </div>
+                        <span class="text-sm font-bold text-gray-700">Contexto</span>
+                        <span class="text-[10px] text-gray-500 text-center">Semântica</span>
+                    </button>
+                    
+                    <button class="app-button btn-som border-2 border-som-100 bg-gradient-to-br from-som-50 to-white rounded-2xl p-4 flex flex-col items-center gap-2" onclick="openContent('som')">
+                        <div class="w-14 h-14 bg-gradient-to-br from-som-500 to-som-700 rounded-2xl flex items-center justify-center shadow-lg">
+                            <i class="ph-fill ph-speaker-high text-white text-2xl"></i>
+                        </div>
+                        <span class="text-sm font-bold text-gray-700">Som</span>
+                        <span class="text-[10px] text-gray-500 text-center">Fonética</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Section 2: Skills -->
+            <div>
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-gray-700 font-bold text-lg">🎯 Habilidades</h2>
+                    <span class="badge bg-blue-100 text-blue-700">4 Skills</span>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <button class="app-button btn-listening border-2 border-listening-100 bg-gradient-to-br from-listening-50 to-white rounded-2xl p-4 flex flex-col items-center gap-2" onclick="openContent('listening')">
+                        <div class="w-16 h-16 bg-gradient-to-br from-listening-500 to-listening-700 rounded-2xl flex items-center justify-center shadow-lg">
+                            <i class="ph-fill ph-headphones text-white text-3xl"></i>
+                        </div>
+                        <span class="font-bold text-gray-700">Listening</span>
+                        <span class="text-[10px] text-gray-500">Escuta</span>
+                    </button>
+                    
+                    <button class="app-button btn-speaking border-2 border-speaking-100 bg-gradient-to-br from-speaking-50 to-white rounded-2xl p-4 flex flex-col items-center gap-2" onclick="openContent('speaking')">
+                        <div class="w-16 h-16 bg-gradient-to-br from-speaking-500 to-speaking-700 rounded-2xl flex items-center justify-center shadow-lg">
+                            <i class="ph-fill ph-microphone text-white text-3xl"></i>
+                        </div>
+                        <span class="font-bold text-gray-700">Speaking</span>
+                        <span class="text-[10px] text-gray-500">Fala</span>
+                    </button>
+                    
+                    <button class="app-button btn-reading border-2 border-reading-100 bg-gradient-to-br from-reading-50 to-white rounded-2xl p-4 flex flex-col items-center gap-2" onclick="openContent('reading')">
+                        <div class="w-16 h-16 bg-gradient-to-br from-reading-500 to-reading-700 rounded-2xl flex items-center justify-center shadow-lg">
+                            <i class="ph-fill ph-book-open text-white text-3xl"></i>
+                        </div>
+                        <span class="font-bold text-gray-700">Reading</span>
+                        <span class="text-[10px] text-gray-500">Leitura</span>
+                    </button>
+                    
+                    <button class="app-button btn-writing border-2 border-writing-100 bg-gradient-to-br from-writing-50 to-white rounded-2xl p-4 flex flex-col items-center gap-2" onclick="openContent('writing')">
+                        <div class="w-16 h-16 bg-gradient-to-br from-writing-500 to-writing-700 rounded-2xl flex items-center justify-center shadow-lg">
+                            <i class="ph-fill ph-pencil-simple text-white text-3xl"></i>
+                        </div>
+                        <span class="font-bold text-gray-700">Writing</span>
+                        <span class="text-[10px] text-gray-500">Escrita</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Section 3: Training -->
+            <div>
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-gray-700 font-bold text-lg">🚀 Training</h2>
+                    <span class="badge bg-cyan-100 text-cyan-700">Completo</span>
+                </div>
+                
+                <button class="app-button btn-training w-full border-2 border-training-100 bg-gradient-to-br from-training-50 to-white rounded-2xl p-5 flex items-center gap-4" onclick="openContent('training')">
+                    <div class="w-16 h-16 bg-gradient-to-br from-training-500 to-training-700 rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
+                        <i class="ph-fill ph-aperture text-white text-3xl"></i>
+                    </div>
+                    <div class="text-left flex-1">
+                        <span class="font-bold text-gray-700 text-lg">Training Completo</span>
+                        <p class="text-xs text-gray-500">Integra método PTT + 4 habilidades</p>
+                    </div>
+                    <i class="ph-fill ph-caret-right text-training-600 text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="p-4 bg-gray-50 border-t border-gray-100">
+            <p class="text-center text-xs text-gray-400">
+                <i class="ph ph-info"></i> PTT CURSOS © 2024
+            </p>
+        </div>
+    </div>
+
+    <!-- Content Modal -->
+    <div id="content-modal" class="modal-overlay fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+        <div class="modal-content bg-white rounded-3xl w-full max-w-md max-h-[90vh] overflow-hidden shadow-2xl">
+            <div id="modal-header" class="bg-gradient-to-r from-indigo-500 to-purple-600 p-5 text-white relative">
+                <button onclick="closeModal()" class="absolute top-4 right-4 bg-white/20 hover:bg-white/30 rounded-full p-2 transition">
+                    <i class="ph ph-x text-xl"></i>
+                </button>
+                <div class="flex items-center gap-3">
+                    <div id="modal-icon" class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+                        <i class="ph-fill ph-star text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold" id="modal-title">Conteúdo</h3>
+                        <p class="text-white/80 text-sm" id="modal-subtitle">PTT CURSOS</p>
+                    </div>
+                </div>
+            </div>
+            <div id="modal-body" class="p-5 overflow-y-auto max-h-[60vh]"></div>
+            <div class="p-5 bg-gray-50 border-t border-gray-100">
+                <button onclick="completeActivity()" id="complete-btn" class="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold py-4 rounded-xl hover:shadow-lg transition-all flex items-center justify-center gap-2">
+                    <i class="ph-fill ph-check-circle text-xl"></i>
+                    <span id="modal-action-text">CONCLUIR</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="modal-overlay fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl w-full max-w-sm p-8 text-center shadow-2xl modal-content">
+            <div class="w-24 h-24 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <i class="ph-fill ph-check-circle text-white text-5xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">Parabéns! 🎉</h3>
+            <p class="text-gray-600 mb-6">Você completou mais uma atividade!</p>
+            <div class="bg-indigo-50 rounded-2xl p-4 mb-6">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm text-gray-500">Atividade</span>
+                    <span class="font-bold text-indigo-600" id="success-activity"></span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-sm text-gray-500">XP Ganho</span>
+                    <span class="font-bold text-green-600" id="success-xp">+50 XP</span>
+                </div>
+            </div>
+            <button onclick="closeSuccessModal()" class="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold py-4 rounded-xl hover:shadow-lg transition-all">CONTINUAR</button>
+        </div>
+    </div>
+
+    <script>
+        // API Base URL
+        const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:3000/api' : '/api';
+        
+        // State
+        let activitiesCompleted = 0;
+        let currentActivity = null;
+        let recognition = null;
+        let isRecording = false;
+        let deferredPrompt = null;
+        let authToken = localStorage.getItem('ptt-token');
+        let currentUser = JSON.parse(localStorage.getItem('ptt-user') || 'null');
+        let isLoginMode = true;
+
+        // Check auth on load
+        window.addEventListener('load', () => {
+            if (authToken && currentUser) {
+                document.getElementById('auth-modal').classList.add('hidden');
+                loadUserProfile();
+            }
+            loadProgress();
+        });
+
+        // PWA Install
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('install-banner').classList.add('show');
+        });
+
+        document.getElementById('install-btn').addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                await deferredPrompt.userChoice;
+                deferredPrompt = null;
+                document.getElementById('install-banner').classList.remove('show');
+            }
+        });
+
+        document.getElementById('dismiss-install').addEventListener('click', () => {
+            document.getElementById('install-banner').classList.remove('show');
+        });
+
+        // Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('✅ SW registrado:', reg.scope))
+                    .catch(err => console.log('❌ SW erro:', err));
+            });
+        }
+
+        // Auth Functions
+        function toggleAuthMode() {
+            isLoginMode = !isLoginMode;
+            document.getElementById('auth-name').classList.toggle('hidden');
+            document.getElementById('auth-btn').innerText = isLoginMode ? 'ENTRAR' : 'CRIAR CONTA';
+            document.getElementById('auth-toggle-text').innerText = isLoginMode ? 'Não tem conta?' : 'Já tem conta?';
+        }
+
+        async function handleAuth() {
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
+            const name = document.getElementById('auth-name').value;
+            const errorEl = document.getElementById('auth-error');
+            const btn = document.getElementById('auth-btn');
+
+            if (!email || !password) {
+                errorEl.innerText = 'Preencha todos os campos';
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            if (!isLoginMode && !name) {
+                errorEl.innerText = 'Preencha o nome';
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            btn.classList.add('loading');
+            btn.innerText = 'Carregando...';
+
+            try {
+                const endpoint = isLoginMode ? '/auth/login' : '/auth/register';
+                const body = isLoginMode ? { email, password } : { email, password, name };
+
+                const response = await fetch(`${API_URL}${endpoint}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Erro na autenticação');
+                }
+
+                authToken = data.token;
+                currentUser = data.user;
+                localStorage.setItem('ptt-token', authToken);
+                localStorage.setItem('ptt-user', JSON.stringify(currentUser));
+
+                document.getElementById('auth-modal').classList.add('hidden');
+                loadUserProfile();
+            } catch (error) {
+                errorEl.innerText = error.message;
+                errorEl.classList.remove('hidden');
+            } finally {
+                btn.classList.remove('loading');
+                btn.innerText = isLoginMode ? 'ENTRAR' : 'CRIAR CONTA';
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('ptt-token');
+            localStorage.removeItem('ptt-user');
+            authToken = null;
+            currentUser = null;
+            document.getElementById('auth-modal').classList.remove('hidden');
+        }
+
+        async function loadUserProfile() {
+            if (!currentUser) return;
+            document.getElementById('user-name-display').innerText = `Olá, ${currentUser.name}!`;
+            document.getElementById('user-xp').innerText = currentUser.total_xp || 0;
+            document.getElementById('user-level').innerText = currentUser.level || 'Iniciante';
+        }
+
+        async function loadProgress() {
+            const saved = localStorage.getItem('ptt-activities');
+            if (saved) {
+                activitiesCompleted = parseInt(saved);
+                updateProgressUI();
+            }
+        }
+
+        function updateProgressUI() {
+            const progress = Math.min((activitiesCompleted / 8) * 100, 100);
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+            document.getElementById('daily-progress').innerText = `${activitiesCompleted}/8 atividades`;
+        }
+
+        // Content Data (simplified for backend integration)
+        const contentData = {
+            logica: { title: '🧠 Lógica', subtitle: 'Sintaxe', color: 'from-logica-500 to-logica-700', icon: 'puzzle-piece', xp: 50 },
+            contexto: { title: '💬 Contexto', subtitle: 'Semântica', color: 'from-contexto-500 to-contexto-700', icon: 'chat-circle-text', xp: 50 },
+            som: { title: '🔊 Som', subtitle: 'Fonética', color: 'from-som-500 to-som-700', icon: 'speaker-high', xp: 50 },
+            listening: { title: '🎧 Listening', subtitle: 'Escuta', color: 'from-listening-500 to-listening-700', icon: 'headphones', xp: 50 },
+            speaking: { title: '🎤 Speaking', subtitle: 'Fala', color: 'from-speaking-500 to-speaking-700', icon: 'microphone', xp: 50 },
+            reading: { title: '📖 Reading', subtitle: 'Leitura', color: 'from-reading-500 to-reading-700', icon: 'book-open', xp: 50 },
+            writing: { title: '✍️ Writing', subtitle: 'Escrita', color: 'from-writing-500 to-writing-700', icon: 'pencil-simple', xp: 50 },
+            training: { title: '🚀 Training', subtitle: 'Completo', color: 'from-training-500 to-training-700', icon: 'aperture', xp: 100 }
+        };
+
+        function openContent(type) {
+            currentActivity = type;
+            const data = contentData[type];
+            document.getElementById('modal-header').className = `bg-gradient-to-r ${data.color} p-5 text-white relative`;
+            document.getElementById('modal-icon').innerHTML = `<i class="ph-fill ph-${data.icon} text-2xl"></i>`;
+            document.getElementById('modal-title').innerText = data.title;
+            document.getElementById('modal-subtitle').innerText = data.subtitle;
+            document.getElementById('modal-body').innerHTML = getExerciseContent(type);
+            document.getElementById('content-modal').classList.remove('hidden');
+            if(type === 'speaking') initSpeechRecognition();
+        }
+
+        function getExerciseContent(type) {
+            const contents = {
+                logica: `<div class="space-y-4"><div class="bg-purple-50 p-4 rounded-xl"><h4 class="font-bold text-purple-700 mb-2">Complete:</h4><p class="text-lg bg-white p-3 rounded-lg mb-3">"She ___ to the store yesterday."</p><div class="space-y-2"><button class="option-btn w-full p-3 rounded-xl border-2" onclick="selectOption(this,false)">go</button><button class="option-btn w-full p-3 rounded-xl border-2" onclick="selectOption(this,true)">went</button></div></div></div>`,
+                contexto: `<div class="space-y-4"><div class="bg-amber-50 p-4 rounded-xl"><h4 class="font-bold text-amber-700 mb-2">No Restaurante:</h4><button class="option-btn w-full p-3 rounded-xl border-2 mb-2" onclick="selectOption(this,false)">"I want food!"</button><button class="option-btn w-full p-3 rounded-xl border-2" onclick="selectOption(this,true)">"Could I see the menu?"</button></div></div>`,
+                som: `<div class="space-y-4"><div class="bg-emerald-50 p-4 rounded-xl"><h4 class="font-bold text-emerald-700 mb-2">Som /θ/</h4><div class="grid grid-cols-2 gap-2"><div class="bg-white p-3 rounded-lg text-center"><p class="font-bold">Think</p></div><div class="bg-white p-3 rounded-lg text-center"><p class="font-bold">Three</p></div></div><button onclick="playAudio()" class="w-full bg-emerald-500 text-white p-3 rounded-xl mt-3">🔊 Ouvir</button></div></div>`,
+                listening: `<div class="space-y-4"><div class="bg-red-50 p-4 rounded-xl"><button onclick="playAudio()" class="bg-red-500 text-white rounded-full p-4 mx-auto block mb-3"><i class="ph-fill ph-play text-2xl"></i></button><button class="option-btn w-full p-3 rounded-xl border-2 mb-2" onclick="selectOption(this,false)">"She is reading"</button><button class="option-btn w-full p-3 rounded-xl border-2" onclick="selectOption(this,true)">"She has been reading"</button></div></div>`,
+                speaking: `<div class="space-y-4"><div class="bg-blue-50 p-4 rounded-xl"><p class="text-center mb-3">"Hello! I am learning English!"</p><button id="record-btn" onclick="toggleRecording()" class="bg-red-500 text-white rounded-full p-4 mx-auto block"><i class="ph-fill ph-microphone text-2xl"></i></button><p id="recording-status" class="text-center text-sm mt-2">Toque para gravar</p></div></div>`,
+                reading: `<div class="space-y-4"><div class="bg-indigo-50 p-4 rounded-xl"><p class="mb-3"><strong>My Routine</strong><br>I wake up at 7 AM. I go to work by bus.</p><button class="option-btn w-full p-3 rounded-xl border-2 mb-2" onclick="selectOption(this,false)">Carro</button><button class="option-btn w-full p-3 rounded-xl border-2" onclick="selectOption(this,true)">Ônibus</button></div></div>`,
+                writing: `<div class="space-y-4"><div class="bg-pink-50 p-4 rounded-xl"><p class="mb-2">Tema: My Hobbies</p><textarea id="writing-input" class="custom-input w-full rounded-xl p-3" rows="4" placeholder="I like..."></textarea></div></div>`,
+                training: `<div class="space-y-4"><div class="bg-cyan-50 p-4 rounded-xl"><h4 class="font-bold text-cyan-700 mb-2">Training Completo</h4><p>Integra todos os métodos e habilidades.</p><div class="grid grid-cols-2 gap-2 mt-3"><div class="bg-white p-2 rounded-lg text-center text-xs"><i class="ph-fill ph-puzzle-piece text-purple-600"></i><br>Lógica</div><div class="bg-white p-2 rounded-lg text-center text-xs"><i class="ph-fill ph-chat-circle-text text-amber-600"></i><br>Contexto</div><div class="bg-white p-2 rounded-lg text-center text-xs"><i class="ph-fill ph-speaker-high text-emerald-600"></i><br>Som</div><div class="bg-white p-2 rounded-lg text-center text-xs"><i class="ph-fill ph-aperture text-cyan-600"></i><br>Skills</div></div></div></div>`
+            };
+            return contents[type] || '';
+        }
+
+        function closeModal() {
+            document.getElementById('content-modal').classList.add('hidden');
+            stopRecording();
+        }
+
+        async function completeActivity() {
+            if(currentActivity === 'writing') {
+                const input = document.getElementById('writing-input');
+                if(input && input.value.length < 20) {
+                    alert('Mínimo 20 caracteres!');
+                    return;
+                }
+            }
+
+            const btn = document.getElementById('complete-btn');
+            btn.classList.add('loading');
+            btn.innerText = 'Enviando...';
+
+            try {
+                const data = contentData[currentActivity];
+                
+                // Send to backend
+                if (authToken && currentUser) {
+                    await fetch(`${API_URL}/progress/activity`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${authToken}`
+                        },
+                        body: JSON.stringify({
+                            activity_type: currentActivity,
+                            activity_name: data.title,
+                            xp_earned: data.xp
+                        })
+                    });
+                }
+
+                // Update local progress
+                activitiesCompleted++;
+                localStorage.setItem('ptt-activities', activitiesCompleted);
+                updateProgressUI();
+
+                closeModal();
+                document.getElementById('success-modal').classList.remove('hidden');
+                document.getElementById('success-activity').innerText = data.title;
+                document.getElementById('success-xp').innerText = `+${data.xp} XP`;
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao salvar progresso. Verifique sua conexão.');
+            } finally {
+                btn.classList.remove('loading');
+                btn.innerHTML = '<i class="ph-fill ph-check-circle text-xl"></i><span id="modal-action-text">CONCLUIR</span>';
+            }
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('success-modal').classList.add('hidden');
+        }
+
+        function selectOption(element, isCorrect) {
+            const parent = element.parentElement;
+            parent.querySelectorAll('.option-btn').forEach(btn => {
+                btn.classList.remove('border-green-500', 'bg-green-50', 'border-red-500', 'bg-red-50');
+                btn.classList.add('border-gray-200');
+            });
+            if(isCorrect) {
+                element.classList.remove('border-gray-200');
+                element.classList.add('border-green-500', 'bg-green-50', 'pop');
+            } else {
+                element.classList.remove('border-gray-200');
+                element.classList.add('border-red-500', 'bg-red-50', 'shake');
+            }
+        }
+
+        function initSpeechRecognition() {
+            if('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+                recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+                recognition.lang = 'en-US';
+                recognition.onresult = (event) => {
+                    document.getElementById('recording-status').innerText = `Você disse: "${event.results[0][0].transcript}"`;
+                };
+            }
+        }
+
+        function toggleRecording() {
+            if(!recognition) { alert('Use Chrome'); return; }
+            if(isRecording) { stopRecording(); }
+            else {
+                recognition.start();
+                isRecording = true;
+                document.getElementById('record-btn').classList.replace('bg-red-500', 'bg-gray-500');
+                document.getElementById('recording-status').innerText = 'Ouvindo...';
+            }
+        }
+
+        function stopRecording() {
+            if(recognition && isRecording) {
+                recognition.stop();
+                isRecording = false;
+                document.getElementById('record-btn').classList.replace('bg-gray-500', 'bg-red-500');
+            }
+        }
+
+        function playAudio() {
+            const utterance = new SpeechSynthesisUtterance('She has been reading for hours');
+            utterance.lang = 'en-US';
+            speechSynthesis.speak(utterance);
+        }
+    </script>
+</body>
+</html>
