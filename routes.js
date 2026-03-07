@@ -5,7 +5,9 @@ const { db } = require('./database');
 
 const router = express.Router();
 
-// Middleware de autenticação
+// ============================================
+// MIDDLEWARE DE AUTENTICAÇÃO (MELHORADO)
+// ============================================
 function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
@@ -14,11 +16,25 @@ function authenticateToken(req, res, next) {
     return res.status(401).json({ error: 'Token não fornecido' });
   }
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+  jwt.verify(token, process.env.JWT_SECRET, (err, decodedUser) => {
     if (err) {
       return res.status(403).json({ error: 'Token inválido' });
     }
-    req.user = user;
+
+    // NOVIDADE: Verificar se o utilizador ainda existe no banco de dados atual
+    try {
+      const userExists = db.prepare('SELECT id FROM users WHERE id = ?').get(decodedUser.id);
+      
+      if (!userExists) {
+        // Se o utilizador foi apagado (ex: banco reiniciado), barramos a ação aqui
+        return res.status(401).json({ error: 'Utilizador não encontrado. A sessão expirou.' });
+      }
+    } catch (dbError) {
+      console.error('Erro ao verificar utilizador no middleware:', dbError);
+      return res.status(500).json({ error: 'Erro interno de verificação' });
+    }
+
+    req.user = decodedUser;
     next();
   });
 }
