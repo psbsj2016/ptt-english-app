@@ -12,12 +12,12 @@
     <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
     <link rel="apple-touch-icon" href="icons/icon-192.png">
     <title>PTT English App | PTT CURSOS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="styles.css">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Auth Modal -->
     <div id="auth-modal" class="modal-overlay">
         <div class="modal-content">
             <div class="text-center mb-6">
@@ -25,36 +25,33 @@
                     <i class="ph-fill ph-graduation-cap"></i>
                 </div>
                 <h2 class="text-2xl font-bold">Bem-vindo ao PTT English!</h2>
-                <p class="text-gray">Faça login ou crie sua conta</p>
+                <p class="text-gray-500">Faça login ou crie sua conta</p>
             </div>
             <div class="space-y-4">
                 <input type="email" id="auth-email" placeholder="Email" class="custom-input" />
                 <input type="password" id="auth-password" placeholder="Senha" class="custom-input" />
                 <input type="text" id="auth-name" placeholder="Nome" class="custom-input hidden" />
                 <button onclick="handleAuth()" id="auth-btn" class="btn-primary">ENTRAR</button>
-                <p class="text-center text-sm text-gray">
+                <p class="text-center text-sm text-gray-500">
                     <span id="auth-toggle-text">Não tem conta?</span>
-                    <button onclick="toggleAuthMode()" class="text-indigo font-bold hover:underline">Clique aqui</button>
+                    <button onclick="toggleAuthMode()" class="text-indigo-600 font-bold hover:underline">Clique aqui</button>
                 </p>
             </div>
             <p id="auth-error" class="error-text hidden"></p>
         </div>
     </div>
 
-    <!-- PWA Install Banner -->
     <div id="install-banner" class="hidden">
         <div class="flex-1">
             <p class="font-bold text-sm">📱 Instalar PTT English App</p>
-            <p class="text-xs text-gray">Acesse offline e tenha ícone na tela inicial</p>
+            <p class="text-xs text-gray-500">Acesse offline e tenha ícone na tela inicial</p>
         </div>
         <button id="install-btn" class="btn-install">Instalar</button>
-        <button id="dismiss-install" class="text-gray hover:text-gray-700 p-2"><i class="ph ph-x"></i></button>
+        <button id="dismiss-install" class="text-gray-400 hover:text-gray-700 p-2"><i class="ph ph-x"></i></button>
     </div>
 
-    <!-- App Container -->
     <div class="app-container">
-        <!-- Header -->
-        <div class="header-gradient">
+        <div class="header-gradient rounded-t-2xl">
             <div class="decoration-circle top-right"></div>
             <div class="decoration-circle bottom-left"></div>
             <div class="relative z-10">
@@ -64,24 +61,24 @@
                             <div class="icon-badge">
                                 <i class="ph-fill ph-graduation-cap"></i>
                             </div>
-                            <span class="badge-text">PTT CURSOS</span>
+                            <span class="badge-text text-white">PTT CURSOS</span>
                         </div>
-                        <h1 class="text-2xl font-bold">🎯 PTT English</h1>
+                        <h1 class="text-2xl font-bold text-white">🎯 PTT English</h1>
                         <p class="text-white/80 text-sm" id="user-name-display">Seu caminho para a fluência</p>
                     </div>
-                    <button onclick="logout()" class="logout-btn">
+                    <button onclick="logout()" class="logout-btn text-white">
                         <i class="ph ph-sign-out text-xl"></i>
                     </button>
                 </div>
                 <div class="mt-5">
-                    <div class="flex justify-between text-xs mb-2">
+                    <div class="flex justify-between text-xs mb-2 text-white">
                         <span class="font-semibold">Progresso de Hoje</span>
                         <span class="font-bold" id="daily-progress">0/8 atividades</span>
                     </div>
                     <div class="progress-bar-container">
                         <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
                     </div>
-                    <div class="flex justify-between text-xs mt-2">
+                    <div class="flex justify-between text-xs mt-2 text-white">
                         <span class="text-white/80">XP Total: <strong id="user-xp">0</strong></span>
                         <span class="text-white/80">Nível: <strong id="user-level">Iniciante</strong></span>
                     </div>
@@ -89,12 +86,10 @@
             </div>
         </div>
 
-        <!-- Main Content -->
         <div class="p-5 space-y-6">
-            <!-- Section 1: PTT Methodology -->
             <div>
                 <div class="flex items-center justify-between mb-3">
-                    <h2 class="section-title">📚 Método PTT CURSOS</h2>
+                    <h2 class="section-title">📚 Método PTT</h2>
                     <span class="badge badge-purple">3 Pilares</span>
                 </div>
                 <div class="grid grid-cols-3 gap-3">
@@ -122,7 +117,6 @@
                 </div>
             </div>
 
-            <!-- Section 2: Skills -->
             <div>
                 <div class="flex items-center justify-between mb-3">
                     <h2 class="section-title">🎯 Habilidades</h2>
@@ -160,32 +154,29 @@
                 </div>
             </div>
 
-            <!-- Section 3: Training -->
             <div>
                 <div class="flex items-center justify-between mb-3">
                     <h2 class="section-title">🚀 Training</h2>
                     <span class="badge badge-cyan">Completo</span>
                 </div>
-                <button class="app-button btn-training w-full" onclick="openContent('training')">
-                    <div class="icon-container training">
+                <button class="app-button btn-training w-full flex-row" onclick="openContent('training')">
+                    <div class="icon-container training mr-3">
                         <i class="ph-fill ph-aperture"></i>
                     </div>
                     <div class="text-left flex-1">
-                        <span class="button-text text-lg">Training Completo</span>
-                        <p class="button-subtext">Integra método PTT + 4 habilidades</p>
+                        <span class="button-text text-lg block">Training Completo</span>
+                        <p class="button-subtext text-left">Integra método PTT + 4 habilidades</p>
                     </div>
                     <i class="ph-fill ph-caret-right text-cyan-600 text-xl"></i>
                 </button>
             </div>
         </div>
 
-        <!-- Footer -->
         <div class="footer">
-            <p class="text-center text-xs text-gray"><i class="ph ph-info"></i> PTT CURSOS © 2024</p>
+            <p class="text-center text-xs text-gray-500"><i class="ph ph-info"></i> PTT CURSOS © 2024</p>
         </div>
     </div>
 
-    <!-- Content Modal -->
     <div id="content-modal" class="modal-overlay hidden">
         <div class="modal-content">
             <div id="modal-header" class="modal-header">
@@ -194,10 +185,10 @@
                 </button>
                 <div class="flex items-center gap-3">
                     <div id="modal-icon" class="modal-icon">
-                        <i class="ph-fill ph-star text-2xl"></i>
+                        <i class="ph-fill ph-star text-2xl text-white"></i>
                     </div>
                     <div>
-                        <h3 class="text-xl font-bold" id="modal-title">Conteúdo</h3>
+                        <h3 class="text-xl font-bold text-white" id="modal-title">Conteúdo</h3>
                         <p class="text-white/80 text-sm" id="modal-subtitle">PTT CURSOS</p>
                     </div>
                 </div>
@@ -212,22 +203,21 @@
         </div>
     </div>
 
-    <!-- Success Modal -->
     <div id="success-modal" class="modal-overlay hidden">
-        <div class="success-container">
-            <div class="success-icon">
-                <i class="ph-fill ph-check-circle"></i>
+        <div class="success-container bg-white p-6 rounded-2xl w-full max-w-sm text-center relative">
+            <div class="success-icon mb-4">
+                <i class="ph-fill ph-check-circle text-6xl text-emerald-500"></i>
             </div>
-            <h3 class="text-2xl font-bold">Parabéns! 🎉</h3>
-            <p class="text-gray mb-6">Você completou mais uma atividade!</p>
-            <div class="success-info">
+            <h3 class="text-2xl font-bold mb-2">Parabéns! 🎉</h3>
+            <p class="text-gray-500 mb-6">Você completou mais uma atividade!</p>
+            <div class="success-info bg-indigo-50 p-4 rounded-xl mb-6">
                 <div class="flex items-center justify-between mb-2">
-                    <span class="text-sm text-gray">Atividade</span>
-                    <span class="font-bold text-indigo" id="success-activity"></span>
+                    <span class="text-sm text-gray-600">Atividade</span>
+                    <span class="font-bold text-indigo-600" id="success-activity"></span>
                 </div>
                 <div class="flex items-center justify-between">
-                    <span class="text-sm text-gray">XP Ganho</span>
-                    <span class="font-bold text-green" id="success-xp">+50 XP</span>
+                    <span class="text-sm text-gray-600">XP Ganho</span>
+                    <span class="font-bold text-emerald-600" id="success-xp">+50 XP</span>
                 </div>
             </div>
             <button onclick="closeSuccessModal()" class="btn-primary w-full">CONTINUAR</button>

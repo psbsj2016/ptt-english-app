@@ -1,5 +1,5 @@
-// API URL - ATUALIZE COM SUA URL DO RAILWAY
-const API_URL = 'https://ptt-english-app-production.up.railway.app/api';
+// A grande mudança: Agora o frontend fala diretamente com o backend local!
+const API_URL = '/api';
 
 // Estado global
 let activitiesCompleted = 0;
@@ -38,7 +38,8 @@ function setupInstallBanner() {
         e.preventDefault();
         deferredPrompt = e;
         const banner = document.getElementById('install-banner');
-        if (banner) banner.classList.add('show');
+        if (banner) banner.classList.remove('hidden');
+        if (banner) banner.classList.add('flex');
     });
     const installBtn = document.getElementById('install-btn');
     if (installBtn) {
@@ -47,14 +48,14 @@ function setupInstallBanner() {
                 deferredPrompt.prompt();
                 await deferredPrompt.userChoice;
                 deferredPrompt = null;
-                document.getElementById('install-banner').classList.remove('show');
+                document.getElementById('install-banner').classList.add('hidden');
             }
         };
     }
     const dismissBtn = document.getElementById('dismiss-install');
     if (dismissBtn) {
         dismissBtn.onclick = () => {
-            document.getElementById('install-banner').classList.remove('show');
+            document.getElementById('install-banner').classList.add('hidden');
         };
     }
 }
@@ -94,10 +95,12 @@ async function handleAuth() {
         });
         const data = await response.json();
         if (!response.ok) throw new Error(data.error || 'Erro na autenticação');
+        
         authToken = data.token;
         currentUser = data.user;
         localStorage.setItem('ptt-token', authToken);
         localStorage.setItem('ptt-user', JSON.stringify(currentUser));
+        
         document.getElementById('auth-modal').classList.add('hidden');
         loadUserProfile();
     } catch (error) {
@@ -148,14 +151,14 @@ function updateProgressUI() {
 
 // Dados dos conteúdos
 const contentData = {
-    logica: { title: '🧠 Lógica', subtitle: 'Sintaxe', color: 'from-logica-500 to-logica-700', icon: 'puzzle-piece', xp: 50 },
-    contexto: { title: '💬 Contexto', subtitle: 'Semântica', color: 'from-contexto-500 to-contexto-700', icon: 'chat-circle-text', xp: 50 },
-    som: { title: '🔊 Som', subtitle: 'Fonética', color: 'from-som-500 to-som-700', icon: 'speaker-high', xp: 50 },
-    listening: { title: '🎧 Listening', subtitle: 'Escuta', color: 'from-listening-500 to-listening-700', icon: 'headphones', xp: 50 },
-    speaking: { title: '🎤 Speaking', subtitle: 'Fala', color: 'from-speaking-500 to-speaking-700', icon: 'microphone', xp: 50 },
-    reading: { title: '📖 Reading', subtitle: 'Leitura', color: 'from-reading-500 to-reading-700', icon: 'book-open', xp: 50 },
-    writing: { title: '✍️ Writing', subtitle: 'Escrita', color: 'from-writing-500 to-writing-700', icon: 'pencil-simple', xp: 50 },
-    training: { title: '🚀 Training', subtitle: 'Completo', color: 'from-training-500 to-training-700', icon: 'aperture', xp: 100 }
+    logica: { title: '🧠 Lógica', subtitle: 'Sintaxe', color: 'from-purple-500 to-purple-700', icon: 'puzzle-piece', xp: 50 },
+    contexto: { title: '💬 Contexto', subtitle: 'Semântica', color: 'from-amber-500 to-amber-700', icon: 'chat-circle-text', xp: 50 },
+    som: { title: '🔊 Som', subtitle: 'Fonética', color: 'from-emerald-500 to-emerald-700', icon: 'speaker-high', xp: 50 },
+    listening: { title: '🎧 Listening', subtitle: 'Escuta', color: 'from-red-500 to-red-700', icon: 'headphones', xp: 50 },
+    speaking: { title: '🎤 Speaking', subtitle: 'Fala', color: 'from-blue-500 to-blue-700', icon: 'microphone', xp: 50 },
+    reading: { title: '📖 Reading', subtitle: 'Leitura', color: 'from-indigo-500 to-indigo-700', icon: 'book-open', xp: 50 },
+    writing: { title: '✍️ Writing', subtitle: 'Escrita', color: 'from-pink-500 to-pink-700', icon: 'pencil-simple', xp: 50 },
+    training: { title: '🚀 Training', subtitle: 'Completo', color: 'from-cyan-500 to-cyan-700', icon: 'aperture', xp: 100 }
 };
 
 // Abrir conteúdo
@@ -167,11 +170,17 @@ function openContent(type) {
     const title = document.getElementById('modal-title');
     const subtitle = document.getElementById('modal-subtitle');
     const body = document.getElementById('modal-body');
-    if (header) header.className = `bg-gradient-to-r ${data.color} p-5 text-white relative`;
-    if (icon) icon.innerHTML = `<i class="ph-fill ph-${data.icon} text-2xl"></i>`;
+    
+    // Reset classes and add new ones
+    if (header) {
+        header.className = `modal-header bg-gradient-to-r ${data.color} p-5 text-white relative`;
+    }
+    
+    if (icon) icon.innerHTML = `<i class="ph-fill ph-${data.icon} text-2xl text-white"></i>`;
     if (title) title.innerText = data.title;
     if (subtitle) subtitle.innerText = data.subtitle;
     if (body) body.innerHTML = getExerciseContent(type);
+    
     const modal = document.getElementById('content-modal');
     if (modal) modal.classList.remove('hidden');
     if (type === 'speaking') initSpeechRecognition();
@@ -180,14 +189,14 @@ function openContent(type) {
 // Conteúdo dos exercícios
 function getExerciseContent(type) {
     const contents = {
-        logica: `<div class="space-y-4"><div class="bg-purple-50 p-4 rounded-xl"><h4 class="font-bold text-purple-700 mb-2">Complete:</h4><p class="text-lg bg-white p-3 rounded-lg mb-3">"She ___ to the store yesterday."</p><div class="space-y-2"><button class="option-btn w-full p-3 rounded-xl border-2" onclick="selectOption(this,false)">go</button><button class="option-btn w-full p-3 rounded-xl border-2" onclick="selectOption(this,true)">went</button></div></div></div>`,
+        logica: `<div class="space-y-4"><div class="bg-purple-50 p-4 rounded-xl"><h4 class="font-bold text-purple-700 mb-2">Complete:</h4><p class="text-lg bg-white p-3 rounded-lg mb-3 border border-purple-100 shadow-sm">"She ___ to the store yesterday."</p><div class="space-y-2"><button class="option-btn w-full p-3 rounded-xl border-2" onclick="selectOption(this,false)">go</button><button class="option-btn w-full p-3 rounded-xl border-2" onclick="selectOption(this,true)">went</button></div></div></div>`,
         contexto: `<div class="space-y-4"><div class="bg-amber-50 p-4 rounded-xl"><h4 class="font-bold text-amber-700 mb-2">No Restaurante:</h4><button class="option-btn w-full p-3 rounded-xl border-2 mb-2" onclick="selectOption(this,false)">"I want food!"</button><button class="option-btn w-full p-3 rounded-xl border-2" onclick="selectOption(this,true)">"Could I see the menu?"</button></div></div>`,
-        som: `<div class="space-y-4"><div class="bg-emerald-50 p-4 rounded-xl"><h4 class="font-bold text-emerald-700 mb-2">Som /θ/</h4><div class="grid grid-cols-2 gap-2"><div class="bg-white p-3 rounded-lg text-center"><p class="font-bold">Think</p></div><div class="bg-white p-3 rounded-lg text-center"><p class="font-bold">Three</p></div></div><button onclick="playAudio()" class="w-full bg-emerald-500 text-white p-3 rounded-xl mt-3">🔊 Ouvir</button></div></div>`,
-        listening: `<div class="space-y-4"><div class="bg-red-50 p-4 rounded-xl"><button onclick="playAudio()" class="bg-red-500 text-white rounded-full p-4 mx-auto block mb-3"><i class="ph-fill ph-play text-2xl"></i></button><button class="option-btn w-full p-3 rounded-xl border-2 mb-2" onclick="selectOption(this,false)">"She is reading"</button><button class="option-btn w-full p-3 rounded-xl border-2" onclick="selectOption(this,true)">"She has been reading"</button></div></div>`,
-        speaking: `<div class="space-y-4"><div class="bg-blue-50 p-4 rounded-xl"><p class="text-center mb-3">"Hello! I am learning English!"</p><button id="record-btn" onclick="toggleRecording()" class="bg-red-500 text-white rounded-full p-4 mx-auto block"><i class="ph-fill ph-microphone text-2xl"></i></button><p id="recording-status" class="text-center text-sm mt-2">Toque para gravar</p></div></div>`,
-        reading: `<div class="space-y-4"><div class="bg-indigo-50 p-4 rounded-xl"><p class="mb-3"><strong>My Routine</strong><br>I wake up at 7 AM. I go to work by bus.</p><button class="option-btn w-full p-3 rounded-xl border-2 mb-2" onclick="selectOption(this,false)">Carro</button><button class="option-btn w-full p-3 rounded-xl border-2" onclick="selectOption(this,true)">Ônibus</button></div></div>`,
-        writing: `<div class="space-y-4"><div class="bg-pink-50 p-4 rounded-xl"><p class="mb-2">Tema: My Hobbies</p><textarea id="writing-input" class="custom-input w-full rounded-xl p-3" rows="4" placeholder="I like..."></textarea></div></div>`,
-        training: `<div class="space-y-4"><div class="bg-cyan-50 p-4 rounded-xl"><h4 class="font-bold text-cyan-700 mb-2">Training Completo</h4><p>Integra todos os métodos e habilidades.</p><div class="grid grid-cols-2 gap-2 mt-3"><div class="bg-white p-2 rounded-lg text-center text-xs"><i class="ph-fill ph-puzzle-piece text-purple-600"></i><br>Lógica</div><div class="bg-white p-2 rounded-lg text-center text-xs"><i class="ph-fill ph-chat-circle-text text-amber-600"></i><br>Contexto</div><div class="bg-white p-2 rounded-lg text-center text-xs"><i class="ph-fill ph-speaker-high text-emerald-600"></i><br>Som</div><div class="bg-white p-2 rounded-lg text-center text-xs"><i class="ph-fill ph-aperture text-cyan-600"></i><br>Skills</div></div></div></div>`
+        som: `<div class="space-y-4"><div class="bg-emerald-50 p-4 rounded-xl"><h4 class="font-bold text-emerald-700 mb-2">Som /θ/</h4><div class="grid grid-cols-2 gap-2"><div class="bg-white p-3 rounded-lg text-center border border-emerald-100 shadow-sm"><p class="font-bold text-emerald-900">Think</p></div><div class="bg-white p-3 rounded-lg text-center border border-emerald-100 shadow-sm"><p class="font-bold text-emerald-900">Three</p></div></div><button onclick="playAudio()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold p-3 rounded-xl mt-3 transition-colors flex items-center justify-center gap-2"><i class="ph-fill ph-speaker-high"></i> Ouvir</button></div></div>`,
+        listening: `<div class="space-y-4"><div class="bg-red-50 p-4 rounded-xl"><button onclick="playAudio()" class="bg-red-500 hover:bg-red-600 transition-colors shadow-lg text-white rounded-full p-4 mx-auto block mb-4"><i class="ph-fill ph-play text-2xl"></i></button><button class="option-btn w-full p-3 rounded-xl border-2 mb-2" onclick="selectOption(this,false)">"She is reading"</button><button class="option-btn w-full p-3 rounded-xl border-2" onclick="selectOption(this,true)">"She has been reading"</button></div></div>`,
+        speaking: `<div class="space-y-4"><div class="bg-blue-50 p-4 rounded-xl"><p class="text-center font-semibold text-blue-900 mb-4 bg-white p-3 rounded-lg border border-blue-100 shadow-sm">"Hello! I am learning English!"</p><button id="record-btn" onclick="toggleRecording()" class="bg-blue-500 hover:bg-blue-600 transition-colors shadow-lg text-white rounded-full p-4 mx-auto block"><i class="ph-fill ph-microphone text-2xl"></i></button><p id="recording-status" class="text-center text-sm mt-3 text-blue-700">Toque para gravar</p></div></div>`,
+        reading: `<div class="space-y-4"><div class="bg-indigo-50 p-4 rounded-xl"><div class="bg-white p-3 rounded-lg border border-indigo-100 shadow-sm mb-4"><p class="text-indigo-900"><strong>My Routine</strong><br>I wake up at 7 AM. I go to work by bus.</p></div><button class="option-btn w-full p-3 rounded-xl border-2 mb-2" onclick="selectOption(this,false)">Carro</button><button class="option-btn w-full p-3 rounded-xl border-2" onclick="selectOption(this,true)">Ônibus</button></div></div>`,
+        writing: `<div class="space-y-4"><div class="bg-pink-50 p-4 rounded-xl"><p class="mb-2 font-bold text-pink-700">Tema: My Hobbies</p><textarea id="writing-input" class="custom-input w-full rounded-xl p-3 border-pink-200 focus:border-pink-500 focus:ring-pink-200" rows="4" placeholder="I like..."></textarea></div></div>`,
+        training: `<div class="space-y-4"><div class="bg-cyan-50 p-4 rounded-xl"><h4 class="font-bold text-cyan-700 mb-2">Training Completo</h4><p class="text-cyan-900 mb-3 text-sm">Integra todos os métodos e habilidades.</p><div class="grid grid-cols-2 gap-2"><div class="bg-white p-3 rounded-lg text-center shadow-sm border border-cyan-100 flex flex-col items-center gap-1"><i class="ph-fill ph-puzzle-piece text-purple-600 text-xl"></i><span class="text-xs font-bold text-gray-700">Lógica</span></div><div class="bg-white p-3 rounded-lg text-center shadow-sm border border-cyan-100 flex flex-col items-center gap-1"><i class="ph-fill ph-chat-circle-text text-amber-600 text-xl"></i><span class="text-xs font-bold text-gray-700">Contexto</span></div><div class="bg-white p-3 rounded-lg text-center shadow-sm border border-cyan-100 flex flex-col items-center gap-1"><i class="ph-fill ph-speaker-high text-emerald-600 text-xl"></i><span class="text-xs font-bold text-gray-700">Som</span></div><div class="bg-white p-3 rounded-lg text-center shadow-sm border border-cyan-100 flex flex-col items-center gap-1"><i class="ph-fill ph-aperture text-cyan-600 text-xl"></i><span class="text-xs font-bold text-gray-700">Skills</span></div></div></div></div>`
     };
     return contents[type] || '';
 }
@@ -212,6 +221,8 @@ async function completeActivity() {
     setLoading(btn, true, 'Enviando...');
     try {
         const data = contentData[currentActivity];
+        
+        // Se estiver logado, salva no banco de dados
         if (authToken && currentUser) {
             await fetch(`${API_URL}/progress/activity`, {
                 method: 'POST',
@@ -225,11 +236,18 @@ async function completeActivity() {
                     xp_earned: data.xp
                 })
             });
+            
+            // Atualizar o XP localmente para não precisar dar reload na página
+            currentUser.total_xp = (currentUser.total_xp || 0) + data.xp;
+            localStorage.setItem('ptt-user', JSON.stringify(currentUser));
+            loadUserProfile(); // Atualiza a UI do XP
         }
+        
         activitiesCompleted++;
         localStorage.setItem('ptt-activities', activitiesCompleted);
         updateProgressUI();
         closeModal();
+        
         const successModal = document.getElementById('success-modal');
         const successActivity = document.getElementById('success-activity');
         const successXp = document.getElementById('success-xp');
@@ -255,15 +273,15 @@ function selectOption(element, isCorrect) {
     const parent = element.parentElement;
     if (!parent) return;
     parent.querySelectorAll('.option-btn').forEach(btn => {
-        btn.classList.remove('border-green-500', 'bg-green-50', 'border-red-500', 'bg-red-50', 'pop', 'shake');
+        btn.classList.remove('border-emerald-500', 'bg-emerald-50', 'border-red-500', 'bg-red-50', 'pop', 'shake', 'text-emerald-700', 'text-red-700', 'font-bold');
         btn.classList.add('border-gray-200');
     });
     if (isCorrect) {
         element.classList.remove('border-gray-200');
-        element.classList.add('border-green-500', 'bg-green-50', 'pop');
+        element.classList.add('border-emerald-500', 'bg-emerald-50', 'pop', 'text-emerald-700', 'font-bold');
     } else {
         element.classList.remove('border-gray-200');
-        element.classList.add('border-red-500', 'bg-red-50', 'shake');
+        element.classList.add('border-red-500', 'bg-red-50', 'shake', 'text-red-700', 'font-bold');
     }
 }
 
@@ -274,22 +292,31 @@ function initSpeechRecognition() {
         recognition.lang = 'en-US';
         recognition.onresult = (event) => {
             const status = document.getElementById('recording-status');
-            if (status) status.innerText = `Você disse: "${event.results[0][0].transcript}"`;
+            if (status) {
+                status.innerText = `Você disse: "${event.results[0][0].transcript}"`;
+                status.classList.remove('text-blue-700');
+                status.classList.add('text-emerald-600', 'font-bold');
+            }
         };
     }
 }
 
 // Toggle recording
 function toggleRecording() {
-    if (!recognition) { alert('Use Chrome para reconhecimento de voz'); return; }
+    if (!recognition) { alert('Use o Chrome para reconhecimento de voz'); return; }
     if (isRecording) { stopRecording(); }
     else {
         recognition.start();
         isRecording = true;
         const btn = document.getElementById('record-btn');
         const status = document.getElementById('recording-status');
-        if (btn) btn.classList.replace('bg-red-500', 'bg-gray-500');
-        if (status) status.innerText = 'Ouvindo...';
+        if (btn) btn.classList.replace('bg-blue-500', 'bg-red-500');
+        if (btn) btn.classList.replace('hover:bg-blue-600', 'hover:bg-red-600');
+        if (status) {
+            status.innerText = 'Ouvindo... Fale agora!';
+            status.classList.remove('text-emerald-600', 'font-bold');
+            status.classList.add('text-blue-700', 'animate-pulse');
+        }
     }
 }
 
@@ -299,7 +326,10 @@ function stopRecording() {
         recognition.stop();
         isRecording = false;
         const btn = document.getElementById('record-btn');
-        if (btn) btn.classList.replace('bg-gray-500', 'bg-red-500');
+        const status = document.getElementById('recording-status');
+        if (btn) btn.classList.replace('bg-red-500', 'bg-blue-500');
+        if (btn) btn.classList.replace('hover:bg-red-600', 'hover:bg-blue-600');
+        if (status) status.classList.remove('animate-pulse');
     }
 }
 
@@ -317,5 +347,12 @@ function hideError(el) { if (el) el.classList.add('hidden'); }
 function setLoading(btn, loading, text) {
     if (!btn) return;
     if (loading) { btn.classList.add('loading'); btn.innerText = text; }
-    else { btn.innerHTML = `<i class="ph-fill ph-check-circle text-xl"></i><span>${text}</span>`; }
+    else { 
+        if(text === 'ENTRAR' || text === 'CRIAR CONTA') {
+            btn.innerHTML = text; 
+        } else {
+            btn.innerHTML = `<i class="ph-fill ph-check-circle text-xl"></i><span>${text}</span>`; 
+        }
+        btn.classList.remove('loading');
+    }
 }
